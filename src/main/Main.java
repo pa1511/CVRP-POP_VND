@@ -16,6 +16,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import common.StartSolution;
 import function.ID1Function;
 import heuristic.VariableNeighborhoodDescent;
 import heuristic.popvnd.ImmuneSystemVariableNeighborhoodDescent_V2;
@@ -51,6 +52,7 @@ import optimization.solution.neighborhood.selection.SelectBestImprovingNeighbor;
 import optimization.solution.neighborhood.selection.SelectFirstImprovingNeighbor;
 import optimization.solution.neighborhood.selection.SelectRandomImprovingNeighbor;
 import utilities.executor.ExecutorServiceProvider;
+import utility.Utilities;
 
 public class Main {
 
@@ -117,7 +119,7 @@ public class Main {
 		//Start measuring time
 		long startTime = System.nanoTime();
 		
-		DemandRoutesSolution routes = getInitialSolution(description);
+		DemandRoutesSolution routes = StartSolution.getInitialSolution(description);
 		switch (ALGORITHM) {
 			case POP_VND:
 				routes = optimizeISVND(routes,description);
@@ -138,7 +140,7 @@ public class Main {
 		double length = routes.getLength();
 		double time = (endTime-startTime)*1e-6;
 
-		presentSolution(output, routes, time, routes.length);
+		Utilities.presentSolution(output, routes, time, routes.length);
 		
 		//Store solution file
 		if(SAVE_RESULT) {
@@ -160,19 +162,6 @@ public class Main {
 			String line = time+","+length+"\n";
 			Files.write(outputFile.toPath(), line.getBytes(), StandardOpenOption.APPEND);
 		}
-	}
-
-	private static DemandRoutesSolution getInitialSolution(CVRPDescription description) {
-		DemandRoutesSolution solution = new DemandRoutesSolution();
-		
-		for(int i=1; i<description.dimension;i++) {
-			ImplicitLoopDemandRoute route = new ImplicitLoopDemandRoute(description.distance, description.demand);
-			route.add(i);
-			solution.add(route);
-		}
-		
-		
-		return solution;
 	}
 
 
@@ -292,16 +281,6 @@ public class Main {
 		solution.removeEmptyRoutes();
 		
 		return solution;
-	}
-	
-	//==============================================================================================================================
-
-	private static void presentSolution(PrintStream output, DemandRoutesSolution routes,double time, double length) {
-		//
-		output.println(routes);
-		output.println("Time: " + time+" ms");
-		output.println("Length: " + length);
-		output.println();
 	}
 
 }
