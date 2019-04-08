@@ -67,7 +67,7 @@ public class PVND_SA_Main {
 
 		//save result
 		if(SAVE_RESULT) {
-			String outFileName = "output/"+name+".txt";
+			String outFileName = "output/sa/"+name+".txt";
 			File outputFile = new File(outFileName);
 			if(!outputFile.exists()) {
 				outputFile.getParentFile().mkdirs();
@@ -103,9 +103,8 @@ public class PVND_SA_Main {
 		ToDoubleFunction<DemandRoutesSolution> function = drs -> drs.length;
 		
 		//Temperature schedule
-		ITempSchedule tempSchedule = new GeometricTempSchhedule(10, 0.9, 100, 5000);
-		
-		
+		ITempSchedule tempSchedule = new GeometricTempSchhedule(10, 0.99, 1000, 1_000_000);
+				
 		//Optimization algorithm
 		IOptimizationAlgorithm<DemandRoutesSolution> optimizationAlgorithm = 
 				new SimulatedAnnealing<DemandRoutesSolution,DemandRoutesSolution>(decoder, neighborhood, startSolution, function, tempSchedule);
